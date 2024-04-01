@@ -1,0 +1,50 @@
+import casa.*
+test "asignar cuenta corriente con 2000 de saldo a la casa, romper algo de 1000, tiene viveres suficientes, hay que hacer reparaciones y no esta en orden " {
+	casaDePepeYJulian.romper(1000)
+	assert.equals(1000, casaDePepeYJulian.montoDeReparacion())
+	assert.that(casaDePepeYJulian.tieneViveresSuficientes())
+	assert.that(casaDePepeYJulian.hayQueHacerReparaciones())
+	assert.notThat(casaDePepeYJulian.estaEnOrden())
+}
+test "cuenta con gatos vacia, costo por opera 20, deposita 1000, saldo 980" {
+	cuentaConGastos.costoPorOperacion(20)
+	assert.equals(20, cuentaConGastos.costoPorOperacion())
+	cuentaConGastos.depositar(1000)
+	cuentaConGastos.saldo()
+	assert.equals(980, cuentaConGastos.saldo())
+}
+test "Se depositan 100 en cuenta combinada, queda 50 de saldo en cuenta con gastos. Se extraen 200, queda
+300 en cuenta corriente" {
+/* Cuenta combinada con primaria cuenta con gastos y 50 de costo por operacion, 
+secundaria con cuenta corriente, con 500 de saldo. 
+*/
+	cuentaCombinada.primaria(cuentaConGastos)
+	cuentaConGastos.costoPorOperacion(50)
+	cuentaCombinada.secundaria(cuentaCorriente)
+	cuentaCorriente.saldo(500)
+	cuentaCombinada.depositar(100)
+	assert.equals(50, cuentaConGastos.saldo())
+	cuentaCombinada.extraer(200)
+	assert.equals(300, cuentaCorriente.saldo())
+	assert.equals(350, cuentaCombinada.saldo())
+}
+test "la casa no esta en orden, aumenta 40% sus viveres, gasta 200 pesos,
+no hace las reparaciones porque no le sobran 1000. La casa queda con 90%
+de viveres, con 100 pesos de reaparciones y su cuenta corriente con 800 pesos" {
+/* Casa con 50% de viveres, con monto de reparaciones de 100, cuenta
+corriente con 1000 de saldo y estrategia de ahorro full.
+ */
+ 	casaDePepeYJulian.porcentajeViveres(50)
+ 	casaDePepeYJulian.montoDeReparacion(100)
+ 	casaDePepeYJulian.cuenta(cuentaCorriente)
+ 	cuentaCorriente.saldo(1000)
+ 	casaDePepeYJulian.estrategiaDeAhorro(full)
+ 	
+ 	assert.notThat(casaDePepeYJulian.estaEnOrden())
+ 	full.mantener(casaDePepeYJulian)
+ 	
+ 	assert.equals(90, casaDePepeYJulian.porcentajeViveres())
+ 	assert.equals(100, casaDePepeYJulian.montoDeReparacion())
+ 	assert.equals(800, cuentaCorriente.saldo())
+ 	
+}
